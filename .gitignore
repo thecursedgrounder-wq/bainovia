@@ -1,0 +1,33 @@
+# ===== Third-party / reference repos (not our code) =====
+01_Design_Documents/Freedom-Hunter-main/
+01_Design_Documents/Dark-Souls-III-Deluxe-Edition-main/
+01_Design_Documents/UnityMultiplayerARPG_UMA-main/
+
+# ===== OS junk =====
+Thumbs.db
+Desktop.ini
+.DS_Store
+ehthumbs.db
+
+# ===== Editor / IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+
+# ===== Node (if any) =====
+node_modules/
+npm-debug.log*
+
+# ===== Large temp/cache that should not be versioned =====
+*.tmp
+*.log

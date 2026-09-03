@@ -1,0 +1,18 @@
+# Route large binary assets through Git LFS
+# (GitHub blocks files >100 MB pushed as regular files.)
+08_Builds/proto.glb filter=lfs diff=lfs merge=lfs -text
+02_Art_Assets/Characters/Untitled.blend filter=lfs diff=lfs merge=lfs -text
+*7d59a52ee41f66dfed19b64cca1acbd9.glb filter=lfs diff=lfs merge=lfs -text
+
+# Binary assets under 100 MB: stored normally (no LFS needed)
+*.glb binary
+*.blend binary
+*.fbx binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.tga binary
+*.obj binary
+*.wav binary
+*.ogg binary
+*.mp3 binary
