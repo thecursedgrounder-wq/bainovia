@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Text.Json;
 
 /// <summary>
 /// Faction System - Manages faction reputation, relationships, and quests
@@ -221,12 +222,15 @@ public class FactionSystem : MonoBehaviour
         {
             data.factionReputations[faction.factionId] = faction.reputation;
         }
-        return JsonUtility.ToJson(data);
+        // JsonUtility cannot serialize Dictionary; use System.Text.Json instead
+        return JsonSerializer.Serialize(data);
     }
 
     public void LoadData(string jsonData)
     {
-        FactionSaveData data = JsonUtility.FromJson<FactionSaveData>(jsonData);
+        if (string.IsNullOrEmpty(jsonData)) return;
+        FactionSaveData data = JsonSerializer.Deserialize<FactionSaveData>(jsonData);
+        if (data == null) return;
         foreach (var kvp in data.factionReputations)
         {
             SetReputation(kvp.Key, kvp.Value);

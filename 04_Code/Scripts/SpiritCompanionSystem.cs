@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 /// <summary>
 /// Spirit Companion System - Collect spirits from enemies, each providing unique abilities
@@ -355,12 +356,15 @@ public class SpiritCompanionSystem : MonoBehaviour
                 isActive = spirit.isActive
             };
         }
-        return JsonUtility.ToJson(data);
+        // JsonUtility cannot serialize Dictionary; use System.Text.Json instead
+        return JsonSerializer.Serialize(data);
     }
 
     public void LoadData(string jsonData)
     {
-        SpiritSaveData data = JsonUtility.FromJson<SpiritSaveData>(jsonData);
+        if (string.IsNullOrEmpty(jsonData)) return;
+        SpiritSaveData data = JsonSerializer.Deserialize<SpiritSaveData>(jsonData);
+        if (data == null) return;
         foreach (var kvp in data.spiritStates)
         {
             if (spiritDictionary.ContainsKey(kvp.Key))

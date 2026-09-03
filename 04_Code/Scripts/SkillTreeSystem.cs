@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Text.Json;
 
 /// <summary>
 /// Skill Tree System - Manages skill progression across Combat, Exploration, and Social branches
@@ -44,10 +45,37 @@ public class SkillTreeSystem : MonoBehaviour
 
     private Dictionary<string, Skill> skillDictionary = new Dictionary<string, Skill>();
 
+    // Cached base stats so skill bonuses are computed from an un-mutated baseline
+    // (prevents compounding stat inflation on repeated level-ups / loads)
+    private int baseLightAttackDamage;
+    private int baseHeavyAttackDamage;
+    private float baseWalkSpeed;
+    private float baseRunSpeed;
+    private bool baseStatsCached = false;
+
     void Start()
     {
         InitializeSkills();
         availableSkillPoints = totalSkillPoints;
+    }
+
+    void CacheBaseStats()
+    {
+        if (baseStatsCached || player == null) return;
+        baseLightAttackDamage = player.lightAttackDamage;
+        baseHeavyAttackDamage = player.heavyAttackDamage;
+        baseWalkSpeed = player.walkSpeed;
+        baseRunSpeed = player.runSpeed;
+        baseStatsCached = true;
+    }
+
+    void RestoreBaseStats()
+    {
+        if (baseStatsCached || player == null) return;
+        player.lightAttackDamage = baseLightAttackDamage;
+        player.heavyAttackDamage = baseHeavyAttackDamage;
+        player.walkSpeed = baseWalkSpeed;
+        player.runSpeed = baseRunSpeed;
     }
 
     void InitializeSkills()
@@ -140,8 +168,10 @@ public class SkillTreeSystem : MonoBehaviour
             case "claw_mastery":
                 if (player != null)
                 {
-                    player.lightAttackDamage = Mathf.RoundToInt(player.lightAttackDamage * (1f + skill.currentLevel * 0.1f));
-                    player.heavyAttackDamage = Mathf.RoundToInt(player.heavyAttackDamage * (1f + skill.currentLevel * 0.1f));
+                    CacheBaseStats();
+                    // Recompute from base so the bonus is level-accurate and idempotent
+                    player.lightAttackDamage = Mathf.RoundToInt(baseLightAttackDamage * (1f + skill.currentLevel * 0.1f));
+                    player.heavyAttackDamage = Mathf.RoundToInt(baseHeavyAttackDamage * (1f + skill.currentLevel * 0.1f));
                 }
                 break;
 
@@ -168,8 +198,10 @@ public class SkillTreeSystem : MonoBehaviour
             case "movement_speed":
                 if (player != null)
                 {
-                    player.walkSpeed *= (1f + skill.currentLevel * 0.05f);
-                    player.runSpeed *= (1f + skill.currentLevel * 0.05f);
+                    CacheBaseStats();
+                    // Recompute from base so the bonus is level-accurate and idempotent
+                    player.walkSpeed = baseWalkSpeed * (1f + skill.currentLevel * 0.05f);
+                    player.runSpeed = baseRunSpeed * (1f + skill.currentLevel * 0.05f);
                 }
                 break;
 
@@ -264,12 +296,15 @@ public class SkillTreeSystem : MonoBehaviour
             };
         }
 
-        return JsonUtility.ToJson(data);
+        // JsonUtility cannot serialize Dictionary; use System.Text.Json instead
+        return JsonSerializer.Serialize(data);
     }
 
     public void LoadData(string jsonData)
     {
-        SkillTreeSaveData data = JsonUtility.FromJson<SkillTreeSaveData>(jsonData);
+        if (string.IsNullOrEmpty(jsonData)) return;
+        SkillTreeSaveData data = JsonSerializer.Deserialize<SkillTreeSaveData>(jsonData);
+        if (data == null) return;
         totalSkillPoints = data.totalSkillPoints;
         availableSkillPoints = data.availableSkillPoints;
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Text.Json;
 
 /// <summary>
 /// Quest System - Manages quests, objectives, and rewards
@@ -345,12 +346,15 @@ public class QuestSystem : MonoBehaviour
                 data.questStates[quest.questId].objectiveProgress[objective.objectiveId] = objective.currentCount;
             }
         }
-        return JsonUtility.ToJson(data);
+        // JsonUtility cannot serialize Dictionary; use System.Text.Json instead
+        return JsonSerializer.Serialize(data);
     }
 
     public void LoadData(string jsonData)
     {
-        QuestSaveData data = JsonUtility.FromJson<QuestSaveData>(jsonData);
+        if (string.IsNullOrEmpty(jsonData)) return;
+        QuestSaveData data = JsonSerializer.Deserialize<QuestSaveData>(jsonData);
+        if (data == null) return;
         foreach (var kvp in data.questStates)
         {
             if (questDictionary.ContainsKey(kvp.Key))

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Text.Json;
 
 /// <summary>
 /// Inventory System - Manages items, equipment, runes, and consumables
@@ -402,12 +403,15 @@ public class InventorySystem : MonoBehaviour
             };
         }
 
-        return JsonUtility.ToJson(data);
+        // JsonUtility cannot serialize Dictionary; use System.Text.Json instead
+        return JsonSerializer.Serialize(data);
     }
 
     public void LoadData(string jsonData)
     {
-        InventorySaveData data = JsonUtility.FromJson<InventorySaveData>(jsonData);
+        if (string.IsNullOrEmpty(jsonData)) return;
+        InventorySaveData data = JsonSerializer.Deserialize<InventorySaveData>(jsonData);
+        if (data == null) return;
         gold = data.gold;
         maxSlots = data.maxSlots;
 

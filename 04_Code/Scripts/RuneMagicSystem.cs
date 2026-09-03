@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Rune Magic System - Manages rune abilities, cooldowns, and combinations
