@@ -57,6 +57,7 @@ public class BossAI : MonoBehaviour
     private bool transitioning;
     private bool charging;
     private bool telegraphing;
+    private bool attacking;
     private Vector3 chargeDirection;
     private Coroutine actionRoutine;
 
@@ -78,7 +79,7 @@ public class BossAI : MonoBehaviour
 
     void Update()
     {
-        if (isDead || transitioning || charging || telegraphing)
+        if (isDead || transitioning || charging || telegraphing || attacking)
             return;
 
         if (health != null && health.IsDead())
@@ -147,6 +148,7 @@ public class BossAI : MonoBehaviour
         if (player == null)
             yield break;
 
+        attacking = true;
         float dist = Vector3.Distance(transform.position, player.transform.position);
         int choice = PickAttack(dist);
 
@@ -166,6 +168,7 @@ public class BossAI : MonoBehaviour
                 break;
         }
 
+        attacking = false;
         actionRoutine = null;
         attackTimer = AttackCooldownForPhase();
     }
@@ -306,7 +309,10 @@ public class BossAI : MonoBehaviour
 
         charging = false;
         if (navAgent != null)
+        {
             navAgent.enabled = true;
+            navAgent.Warp(transform.position);
+        }
     }
 
     IEnumerator EnterNextPhase(int newPhase)
@@ -315,6 +321,12 @@ public class BossAI : MonoBehaviour
             yield break;
 
         transitioning = true;
+        if (actionRoutine != null)
+        {
+            StopCoroutine(actionRoutine);
+            actionRoutine = null;
+            attacking = false;
+        }
         if (navAgent != null)
             navAgent.ResetPath();
 

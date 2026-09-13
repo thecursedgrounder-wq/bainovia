@@ -82,6 +82,8 @@ public class EnemyAI : MonoBehaviour
             if (stunTimer <= 0)
             {
                 currentState = AIState.Chase;
+                if (animator != null)
+                    animator.SetBool("IsStunned", false);
             }
         }
     }
@@ -300,6 +302,9 @@ public class EnemyAI : MonoBehaviour
     {
         stunTimer = duration;
         currentState = AIState.Stunned;
+
+        if (navAgent != null)
+            navAgent.ResetPath();
 
         if (animator != null)
         {

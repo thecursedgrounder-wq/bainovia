@@ -141,7 +141,7 @@ public class SpiritCompanionSystem : MonoBehaviour
         if (spirit == null)
             return false;
 
-        if (spiritCooldowns[spirit.spiritId] > 0)
+        if (spiritCooldowns.TryGetValue(spirit.spiritId, out float cd) && cd > 0)
         {
             Debug.Log($"{spirit.spiritName} is on cooldown");
             return false;
@@ -153,7 +153,7 @@ public class SpiritCompanionSystem : MonoBehaviour
         }
 
         activeSpirit = spirit;
-        spiritCooldowns[spirit.spiritId] = spirit.ability.cooldown;
+        spiritCooldowns[spirit.spiritId] = spirit.ability != null ? spirit.ability.cooldown : 0f;
 
         // Spawn spirit model
         if (spirit.spiritModel != null && spiritSpawnPoint != null)
@@ -162,7 +162,7 @@ public class SpiritCompanionSystem : MonoBehaviour
         }
 
         // Play sound
-        if (spirit.ability.sound != null)
+        if (spirit.ability != null && spirit.ability.sound != null && Camera.main != null)
         {
             AudioSource.PlayClipAtPoint(spirit.ability.sound, Camera.main.transform.position);
         }

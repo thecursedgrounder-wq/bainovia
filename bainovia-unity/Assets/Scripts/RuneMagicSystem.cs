@@ -515,7 +515,13 @@ public class RuneMagicSystem : MonoBehaviour
 
     public List<RuneType> GetAvailableRunes()
     {
-        return new List<RuneType>(runeDictionary.Keys);
+        var result = new List<RuneType>();
+        foreach (RuneType rune in availableRunes)
+        {
+            if (runeDictionary.ContainsKey(rune))
+                result.Add(rune);
+        }
+        return result;
     }
 
     // Save/Load system

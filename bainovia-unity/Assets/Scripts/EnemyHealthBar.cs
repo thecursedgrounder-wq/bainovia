@@ -42,7 +42,8 @@ public class EnemyHealthBar : MonoBehaviour
 
         float inverseScale = 1f;
         Vector3 lossy = transform.lossyScale;
-        if (lossy.x > 0.01f) inverseScale = 1f / lossy.x;
+        float maxScale = Mathf.Max(Mathf.Abs(lossy.x), Mathf.Max(Mathf.Abs(lossy.y), Mathf.Abs(lossy.z)));
+        if (maxScale > 0.01f) inverseScale = 1f / maxScale;
         canvasRect.localScale = new Vector3(inverseScale, inverseScale, inverseScale);
         canvasRect.sizeDelta = new Vector2(width, height);
 

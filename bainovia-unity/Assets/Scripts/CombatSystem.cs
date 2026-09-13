@@ -123,6 +123,7 @@ public class CombatSystem : MonoBehaviour
 
     public void DealDamage(float damage, float range)
     {
+        if (attackPoint == null) return;
         Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, range, enemyLayers);
 
         foreach (Collider enemy in hitEnemies)
@@ -137,6 +138,7 @@ public class CombatSystem : MonoBehaviour
 
     public void ApplyKnockback(float range, float force)
     {
+        if (attackPoint == null) return;
         Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, range, enemyLayers);
 
         foreach (Collider enemy in hitEnemies)

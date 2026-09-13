@@ -71,7 +71,7 @@ public class SkillTreeSystem : MonoBehaviour
 
     void RestoreBaseStats()
     {
-        if (baseStatsCached || player == null) return;
+        if (!baseStatsCached || player == null) return;
         player.lightAttackDamage = baseLightAttackDamage;
         player.heavyAttackDamage = baseHeavyAttackDamage;
         player.walkSpeed = baseWalkSpeed;

@@ -52,6 +52,7 @@ public class Health : MonoBehaviour
             {
                 currentHealth = Mathf.Min(currentHealth + Mathf.RoundToInt(regenerationRate), maxHealth);
                 onHealthChanged?.Invoke(currentHealth);
+                regenerationTimer = regenerationDelay;
             }
         }
         else

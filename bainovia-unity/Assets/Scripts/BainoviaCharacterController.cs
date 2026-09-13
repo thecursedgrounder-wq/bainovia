@@ -420,6 +420,7 @@ public class BainoviaCharacterController : MonoBehaviour
 
     void DealDamage(int damage, float range)
     {
+        if (attackPoint == null) return;
         Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, range, enemyLayers);
 
         foreach (Collider enemy in hitEnemies)
@@ -437,6 +438,7 @@ public class BainoviaCharacterController : MonoBehaviour
 
     void ApplyKnockback(float range, float force)
     {
+        if (attackPoint == null) return;
         Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, range, enemyLayers);
 
         foreach (Collider enemy in hitEnemies)

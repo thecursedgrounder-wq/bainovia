@@ -97,7 +97,7 @@ public class DialogueSystem : MonoBehaviour
             hintText.text = "Press 1-9 to choose, ESC to exit";
 
         // Play voice clip if available
-        if (node.voiceClip != null)
+        if (node.voiceClip != null && Camera.main != null)
         {
             AudioSource.PlayClipAtPoint(node.voiceClip, Camera.main.transform.position);
         }
