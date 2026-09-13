@@ -1,0 +1,10 @@
+Third-party models sourced locally from the Freedom-Hunter project (https://github.com/Freedom-Hunter/Freedom-Hunter, GPL-3.0-or-later codebase, REUSE-licensed assets).
+
+  well.gltf + textures
+    (c) 2018 OwlishMedia - CC0 1.0 Universal
+    License: CC0-1.0.txt
+
+  medieval_houses.gltf + textures (MVK_Houses_*)
+    (c) 2017 Glitch Squirrel - CC BY 3.0
+    License: CC-BY-3.0.txt
+    Attribution required: "Medieval Village Kit assets by Glitch Squirrel (2017), CC BY 3.0."
