@@ -49,6 +49,30 @@ public class GameUI : MonoBehaviour
 
         if (questSystem == null)
             questSystem = FindObjectOfType<QuestSystem>();
+
+        AddBuildWatermark();
+    }
+
+    void AddBuildWatermark()
+    {
+        var go = new GameObject("BuildWatermark", typeof(RectTransform), typeof(Text));
+        var rt = (RectTransform)go.transform;
+        rt.SetParent(transform, false);
+        rt.anchorMin = new Vector2(1f, 1f);
+        rt.anchorMax = new Vector2(1f, 1f);
+        rt.pivot = new Vector2(1f, 1f);
+        rt.anchoredPosition = new Vector2(-6f, -4f);
+        rt.sizeDelta = new Vector2(240f, 20f);
+        var t = go.GetComponent<Text>();
+        t.text = $"BAINOVIA v{Application.version}";
+        t.fontSize = 13;
+        t.alignment = TextAnchor.MiddleRight;
+        t.color = new Color(1f, 1f, 1f, 0.42f);
+        t.horizontalOverflow = HorizontalWrapMode.Overflow;
+        t.verticalOverflow = VerticalWrapMode.Overflow;
+        var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        if (font != null) t.font = font;
+        go.transform.SetAsLastSibling();
     }
 
     void Update()
