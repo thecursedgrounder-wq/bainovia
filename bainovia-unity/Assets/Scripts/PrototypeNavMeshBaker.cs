@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
@@ -39,5 +40,30 @@ public class PrototypeNavMeshBaker : MonoBehaviour
         {
             Debug.LogWarning($"PrototypeNavMeshBaker: {e.Message}");
         }
+    }
+
+    /// <summary>
+    /// Agents whose OnEnable ran before the bake complete (player scene order is
+    /// not guaranteed) fail to create. Re-creating them one frame after the mesh
+    /// exists makes pathing reliable in the built player.
+    /// </summary>
+    void Start()
+    {
+        StartCoroutine(RebindAgents());
+    }
+
+    IEnumerator RebindAgents()
+    {
+        yield return null;
+
+        var agents = Object.FindObjectsByType<NavMeshAgent>(
+            FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var a in agents)
+        {
+            if (a == null) continue;
+            a.enabled = false;
+            a.enabled = true;
+        }
+        Debug.Log($"PrototypeNavMeshBaker: rebound {agents.Length} agents.");
     }
 }
